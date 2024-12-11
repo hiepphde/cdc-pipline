@@ -98,7 +98,10 @@ services:
       confluent:
 
   debezium:
-    image: debezium/connect:latest
+#    image: debezium/connect:latest
+    build:
+      context: ./Dockerfile
+      dockerfile: Dockerfile
     restart: always
     container_name: debezium
     hostname: debezium
@@ -118,7 +121,11 @@ services:
       OFFSET_STORAGE_TOPIC: connect_offsets
       KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: 'false'
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: 'false'
       ENABLE_DEBEZIUM_SCRIPTING: 'true'
+      INCLUDE_SCHEMA_CHANGES: 'true'
+
     healthcheck:
       test:
         [ 'CMD', 'curl', '--silent', '--fail', '-X', 'GET', 'http://localhost:8083/connectors', ]
